@@ -19,62 +19,62 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="connection.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="file_block.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="filemanager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="http_parse.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="iocp_base.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="session.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="threadpool.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="util_container.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="utility.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="connection.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="file_block.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="filemanager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="http_parse.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="iocp_base.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="session.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="utility.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\connection.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\file_block.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\filemanager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\http_parse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\iocp_base.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\session.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\threadpool.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\util_container.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\utility.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\connection.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\file_block.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\filemanager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\http_parse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\iocp_base.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\session.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\utility.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\lib\libboost_filesystem-vc120-mt-gd-1_60.lib">

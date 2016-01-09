@@ -82,28 +82,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="connection.h" />
-    <ClInclude Include="filemanager.h" />
-    <ClInclude Include="file_block.h" />
-    <ClInclude Include="http_parse.h" />
-    <ClInclude Include="iocp_base.h" />
-    <ClInclude Include="session.h" />
-    <ClInclude Include="threadpool.hpp" />
-    <ClInclude Include="utility.h" />
-    <ClInclude Include="util_container.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="connection.cpp" />
-    <ClCompile Include="filemanager.cpp" />
-    <ClCompile Include="file_block.cpp" />
-    <ClCompile Include="http_parse.cpp" />
-    <ClCompile Include="iocp_base.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="session.cpp" />
-    <ClCompile Include="utility.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\connection.h" />
+    <ClInclude Include="..\source\filemanager.h" />
+    <ClInclude Include="..\source\file_block.h" />
+    <ClInclude Include="..\source\http_parse.h" />
+    <ClInclude Include="..\source\iocp_base.h" />
+    <ClInclude Include="..\source\session.h" />
+    <ClInclude Include="..\source\threadpool.hpp" />
+    <ClInclude Include="..\source\utility.h" />
+    <ClInclude Include="..\source\util_container.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\connection.cpp" />
+    <ClCompile Include="..\source\filemanager.cpp" />
+    <ClCompile Include="..\source\file_block.cpp" />
+    <ClCompile Include="..\source\http_parse.cpp" />
+    <ClCompile Include="..\source\iocp_base.cpp" />
+    <ClCompile Include="..\source\main.cpp" />
+    <ClCompile Include="..\source\session.cpp" />
+    <ClCompile Include="..\source\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\lib\libboost_filesystem-vc120-mt-gd-1_60.lib" />
