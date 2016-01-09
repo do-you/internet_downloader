@@ -103,11 +103,11 @@
     <ClCompile Include="utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="libboost_filesystem-vc120-mt-gd-1_60.lib" />
-    <Library Include="libboost_system-vc120-mt-gd-1_60.lib" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Library Include="..\lib\libboost_filesystem-vc120-mt-gd-1_60.lib" />
+    <Library Include="..\lib\libboost_system-vc120-mt-gd-1_60.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -74,14 +74,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="libboost_filesystem-vc120-mt-gd-1_60.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="libboost_system-vc120-mt-gd-1_60.lib">
-      <Filter>lib</Filter>
-    </Library>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Library Include="..\lib\libboost_filesystem-vc120-mt-gd-1_60.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\libboost_system-vc120-mt-gd-1_60.lib">
+      <Filter>lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>
