@@ -5,7 +5,7 @@
 #include <map>
 #include <algorithm>
 #include <iterator>
-#include "session.h"
+#include "net_io.h"
 #include "utility.h"
 using namespace std;
 
@@ -13,7 +13,7 @@ using namespace std;
 struct cmd_process
 {
 	const char *cmd;
-	void(*process)(session &, char *);
+	void(*process)(net_io &, char *);
 
 	operator const char*() const
 	{
@@ -21,7 +21,7 @@ struct cmd_process
 	}
 };
 
-void set_split(session &c, char *p)
+void set_split(net_io &c, char *p)
 {
 	int a;
 	if (0 == (a = atoi(p)))
@@ -29,7 +29,7 @@ void set_split(session &c, char *p)
 	else
 		c.set_split(a);
 }
-void set_header(session &c, char *p)
+void set_header(net_io &c, char *p)
 {
 	char *pos = NULL;
 
@@ -44,7 +44,7 @@ void set_header(session &c, char *p)
 			c.set_header(p, pos + 1);
 	}
 }
-void set_path(session &c, char *p)
+void set_path(net_io &c, char *p)
 {
 	boost::system::error_code erco;
 	is_directory(p, erco);
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	down_info temp2;
 	if (!parseUrl(url, temp2))
 		util_err_exit("∏Ò Ω¥ÌŒÛ\n");
-	session seon(url);
+	net_io seon(url);
 
 
 	for (i = 1; i < argc - 1; i++)

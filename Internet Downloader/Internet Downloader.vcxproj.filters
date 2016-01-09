@@ -28,16 +28,10 @@
     <ClInclude Include="..\source\file_block.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\filemanager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\http_parse.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\source\iocp_base.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\session.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\source\threadpool.hpp">
@@ -49,15 +43,18 @@
     <ClInclude Include="..\source\utility.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\file_io.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\net_io.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\connection.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\source\file_block.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\filemanager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\source\http_parse.cpp">
@@ -69,10 +66,13 @@
     <ClCompile Include="..\source\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\session.cpp">
+    <ClCompile Include="..\source\utility.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\utility.cpp">
+    <ClCompile Include="..\source\file_io.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\net_io.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

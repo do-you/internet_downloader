@@ -1,12 +1,12 @@
 #include <functional>
 #include <numeric>
 #include "http_parse.h"
-#include "session.h"
+#include "net_io.h"
 
 
 using namespace std;
 
-session::session(string url) :filemana(current_path())
+net_io::net_io(string url) :filemana(current_path())
 {
 	this->max_split = 1;
 	has_init = false;
@@ -20,12 +20,12 @@ session::session(string url) :filemana(current_path())
 	status = down_statues::pause;
 }
 
-uint64_t session::get_remain_len()
+uint64_t net_io::get_remain_len()
 {
 	return std::accumulate(connection_list.begin(), connection_list.end(), 0LLU, [](uint64_t a, unordered_map<connection*, block_ptr>::reference b) {return a + b.second->len(); });
 }
 
-void session::init(string filename, uint64_t len, down_info &info_2)
+void net_io::init(string filename, uint64_t len, down_info &info_2)
 {
 	assert(!has_init);
 
@@ -44,7 +44,7 @@ void session::init(string filename, uint64_t len, down_info &info_2)
 		auto x = new connection(info);
 		connection_list.insert({ x, ary[i] });
 		//初始化下载线程的参数
-		x->init(bind(&session::block_complete, this, placeholders::_1, placeholders::_2), ary[i], filemana.create_block_manager(ary[i], max_cache_size / split_count));
+		x->init(bind(&net_io::block_complete, this, placeholders::_1, placeholders::_2), ary[i], filemana.create_block_manager(ary[i], max_cache_size / split_count));
 		x->set_header(user_header);
 		x->start();
 	}
@@ -52,7 +52,7 @@ void session::init(string filename, uint64_t len, down_info &info_2)
 	delete[] ary;
 }
 
-void session::block_complete(connection *which, down_info &info_2)
+void net_io::block_complete(connection *which, down_info &info_2)
 {
 	block_ptr ptr;
 
@@ -66,7 +66,7 @@ void session::block_complete(connection *which, down_info &info_2)
 		auto x = new connection(info);
 		connection_list.insert({ x, ptr });
 		//初始化下载线程的参数
-		x->init(bind(&session::block_complete, this, placeholders::_1, placeholders::_2), ptr, filemana.create_block_manager(ptr, max_cache_size / max_split));
+		x->init(bind(&net_io::block_complete, this, placeholders::_1, placeholders::_2), ptr, filemana.create_block_manager(ptr, max_cache_size / max_split));
 		x->set_header(user_header);
 		x->start();
 	}
@@ -74,7 +74,7 @@ void session::block_complete(connection *which, down_info &info_2)
 		status = down_statues::writing_back;
 }
 
-void session::start()
+void net_io::start()
 {
 	if (status == down_statues::pause)
 	{
@@ -90,12 +90,12 @@ void session::start()
 		{
 			auto x = new connection(info);
 			x->set_header(user_header);
-			x->sniff(bind(&session::init, this, placeholders::_1, placeholders::_2, placeholders::_3));
+			x->sniff(bind(&net_io::init, this, placeholders::_1, placeholders::_2, placeholders::_3));
 		}
 	}
 }
 
-void session::pause()
+void net_io::pause()
 {
 	if (status == down_statues::downloading)
 	{
@@ -106,13 +106,13 @@ void session::pause()
 	}
 }
 
-void session::write_process()
+void net_io::write_process()
 {
 	if (has_init)
 		filemana.write_progress();
 }
 
-void session::set_header(string parm, string value)
+void net_io::set_header(string parm, string value)
 {
 	if (user_header.count(parm) == 0)
 		user_header.insert({ parm, value });
@@ -120,19 +120,19 @@ void session::set_header(string parm, string value)
 		user_header[parm] = value;
 }
 
-void session::set_split(int nsplit)//如果允许任务暂停后更改线程
+void net_io::set_split(int nsplit)//如果允许任务暂停后更改线程
 {
 	if (!has_init)
 		max_split = nsplit;
 }
 
-void session::set_path(string p)
+void net_io::set_path(string p)
 {
 	if (!has_init)
 		filemana.set_path(p);
 }
 
-down_statues session::get_statues()
+down_statues net_io::get_statues()
 {
 	if (status == down_statues::writing_back&&filemana.drain_all())
 		status = down_statues::finish;

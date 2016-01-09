@@ -1,5 +1,5 @@
-#ifndef SESSION_H
-#define SESSION_H
+#ifndef NET_IO_H
+#define NET_IO_H
 
 #include <forward_list>
 #include <functional>
@@ -8,7 +8,7 @@
 #include <boost/filesystem.hpp>
 #include "http_parse.h"
 #include "connection.h"
-#include "filemanager.h"
+#include "file_io.h"
 
 using namespace std;
 using namespace boost::filesystem;
@@ -22,11 +22,11 @@ enum class down_statues
 	finish
 };
 
-class session
+class net_io
 {
 #define max_cache_size 32*1024*1024
 public:
-	session(string url);
+	net_io(string url);
 
 	void start();
 	void pause();
@@ -50,7 +50,7 @@ private:
 	bool has_init;
 	int max_split;
 	unordered_map<connection*, block_ptr> connection_list;
-	filemanager filemana;
+	file_io filemana;
 
 	string file_name;
 	uint64_t file_len;
@@ -62,7 +62,4 @@ private:
 };
 
 
-
-
-
-#endif // SESSION_H
+#endif // NET_IO_H

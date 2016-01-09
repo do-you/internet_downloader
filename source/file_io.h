@@ -1,5 +1,5 @@
-#ifndef FILEMANAGER_H
-#define FILEMANAGER_H
+#ifndef FILE_IO_H
+#define FILE_IO_H
 
 #include <WinSock2.h>
 #include <windows.h>
@@ -20,11 +20,11 @@ using block_ptr = block*;
 
 bool front_first(const block_cache &a, const block_cache &b);
 
-class filemanager
+class file_io
 {
 public:
-	filemanager(path &dir);
-	~filemanager();
+	file_io(path &dir);
+	~file_io();
 	void init(std::string &filename, uint64_t len);
 	bool dynamic_allocate(block_ptr &ptr, uint32_t split_size);
 	int  static_allocate(block_ptr ary[], int nsplit, uint32_t split_size);
@@ -69,7 +69,7 @@ public:
 	std::condition_variable_any is_comp;
 };
 
-#endif // FILEMANAGER_H
+#endif // FILE_IO_H
 
 // struct my_semaphore
 // {

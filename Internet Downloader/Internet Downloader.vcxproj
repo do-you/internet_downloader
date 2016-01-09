@@ -86,23 +86,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\connection.h" />
-    <ClInclude Include="..\source\filemanager.h" />
+    <ClInclude Include="..\source\file_io.h" />
     <ClInclude Include="..\source\file_block.h" />
     <ClInclude Include="..\source\http_parse.h" />
     <ClInclude Include="..\source\iocp_base.h" />
-    <ClInclude Include="..\source\session.h" />
+    <ClInclude Include="..\source\net_io.h" />
     <ClInclude Include="..\source\threadpool.hpp" />
     <ClInclude Include="..\source\utility.h" />
     <ClInclude Include="..\source\util_container.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\connection.cpp" />
-    <ClCompile Include="..\source\filemanager.cpp" />
+    <ClCompile Include="..\source\file_io.cpp" />
     <ClCompile Include="..\source\file_block.cpp" />
     <ClCompile Include="..\source\http_parse.cpp" />
     <ClCompile Include="..\source\iocp_base.cpp" />
     <ClCompile Include="..\source\main.cpp" />
-    <ClCompile Include="..\source\session.cpp" />
+    <ClCompile Include="..\source\net_io.cpp" />
     <ClCompile Include="..\source\utility.cpp" />
   </ItemGroup>
   <ItemGroup>

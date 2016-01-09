@@ -42,7 +42,7 @@ class file_block :public iocp_base
 {
 #define piece_size 4096
 public:
-	friend class filemanager;
+	friend class file_io;
 
 	void write_to_file(char * buf, uint32_t len);
 	void flush();

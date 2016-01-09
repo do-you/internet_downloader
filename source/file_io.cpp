@@ -3,7 +3,7 @@
 #include <functional>
 #include <assert.h>
 #include <string>
-#include "filemanager.h"
+#include "file_io.h"
 #include "utility.h"
 
 using namespace std;
@@ -41,12 +41,12 @@ void qvalue(int n, int ary[], int len)
 }
 
 
-filemanager::filemanager(path &dir) :dir(dir), undistributed_queue(front_first)
+file_io::file_io(path &dir) :dir(dir), undistributed_queue(front_first)
 {
 	had_finish = had_drain_all = had_init = false;
 }
 
-filemanager::~filemanager()
+file_io::~file_io()
 {
 	comp_mutex.lock();
 
@@ -65,7 +65,7 @@ filemanager::~filemanager()
 	printf("is over\n");
 }
 
-void filemanager::init(string &filename, uint64_t len)
+void file_io::init(string &filename, uint64_t len)
 {
 	if (!had_init)
 	{
@@ -114,7 +114,7 @@ void filemanager::init(string &filename, uint64_t len)
 	}
 }
 
-bool filemanager::dynamic_allocate(block_ptr &ptr, uint32_t split_size)
+bool file_io::dynamic_allocate(block_ptr &ptr, uint32_t split_size)
 {
 	if (undistributed_queue.size() > 0)
 	{
@@ -158,7 +158,7 @@ bool filemanager::dynamic_allocate(block_ptr &ptr, uint32_t split_size)
 	}
 }
 
-int filemanager::static_allocate(block_ptr ary[], int nsplit, uint32_t split_size)
+int file_io::static_allocate(block_ptr ary[], int nsplit, uint32_t split_size)
 {
 	if (had_init && undistributed_queue.size() > 0)
 	{
@@ -230,7 +230,7 @@ int filemanager::static_allocate(block_ptr ary[], int nsplit, uint32_t split_siz
 	return 0;
 }
 
-void filemanager::block_complete(block_ptr ptr)
+void file_io::block_complete(block_ptr ptr)
 {
 	block_cache *blk_ptr = CONTAINING_RECORD(ptr, block_cache, base);
 
@@ -241,7 +241,7 @@ void filemanager::block_complete(block_ptr ptr)
 		printf("文件接收完毕\n");
 }
 
-void filemanager::write_progress()
+void file_io::write_progress()
 {
 	if (had_init&&!had_finish)
 	{
@@ -278,18 +278,18 @@ void filemanager::write_progress()
 	}
 }
 
-file_block* filemanager::create_block_manager(block_ptr blo, uint32_t cachesize)
+file_block* file_io::create_block_manager(block_ptr blo, uint32_t cachesize)
 {
-	return new file_block(CONTAINING_RECORD(blo, block_cache, base), hfile, cachesize, std::bind(&filemanager::write_cmplete, this, std::placeholders::_1));
+	return new file_block(CONTAINING_RECORD(blo, block_cache, base), hfile, cachesize, std::bind(&file_io::write_cmplete, this, std::placeholders::_1));
 }
 
-void filemanager::set_path(string &p)
+void file_io::set_path(string &p)
 {
 	if (!had_init)
 		dir = p;
 }
 
-void filemanager::testsync()
+void file_io::testsync()
 {
 	comp_mutex.lock();
 
@@ -301,7 +301,7 @@ void filemanager::testsync()
 	printf("is over\n");
 }
 
-void filemanager::file_init(const string &filename, int flag)
+void file_io::file_init(const string &filename, int flag)
 {
 	file_name = filename;
 
@@ -338,7 +338,7 @@ void filemanager::file_init(const string &filename, int flag)
 		util_errno_exit("MapViewOfFile fail:");
 }
 
-bool filemanager::parse_profile(size_t len)
+bool file_io::parse_profile(size_t len)
 {
 	profile *prof = (profile*)profile_buf;
 
@@ -357,7 +357,7 @@ bool filemanager::parse_profile(size_t len)
 }
 
 
-void filemanager::write_cmplete(block_cache *blk)//要加锁保护
+void file_io::write_cmplete(block_cache *blk)//要加锁保护
 {
 	writing_back_list.erase(blk);
 	delete blk;
