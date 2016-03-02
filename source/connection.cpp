@@ -161,7 +161,8 @@ void connection::parse_header(char *buf, uint64_t len)
 							if (filename_start != NULL)
 							{
 								const char* filename_end = strchr(filename_start, '"');
-								parms->file_name.assign(filename_start, filename_end);
+								string temp_str(filename_start, filename_end);
+								util_utf8_to_acp(temp_str, parms->file_name);
 							}
 						}
 					}
