@@ -95,6 +95,8 @@ void win32_init()
 	if ((iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0)) == NULL)
 		util_errno_exit("CreateIoCompletionPort fail:");
 
+	init_extent_func();
+
 	nthreads = std::thread::hardware_concurrency() * 2;
 	workers = new std::thread[nthreads];
 	for (int i = 0; i < nthreads; i++)
@@ -156,4 +158,16 @@ void async_read(SOCKET fd, overlapped_base &sess, char *buffer, int len)
 
 	if (SOCKET_ERROR == WSARecv(fd, &buf, 1, NULL, &Flags, (OVERLAPPED *)&sess.overlapped, NULL) && WSAGetLastError() != WSA_IO_PENDING)
 		throw boost::system::system_error(boost::system::error_code(::WSAGetLastError(), boost::system::system_category()));
+}
+static char buf[(sizeof(sockaddr_in) + 16) * 2];
+
+void async_accept(SOCKET listen_sc, SOCKET accept_sc, overlapped_base & sess)
+{
+	if (win32_ext_func.AcceptEx(listen_sc, accept_sc, buf, 0, sizeof(sockaddr_in) + 16, sizeof(sockaddr_in) + 16, NULL, (OVERLAPPED *)&sess.overlapped) == FALSE)
+	{
+		if (WSAGetLastError() != ERROR_IO_PENDING)
+		{
+			util_errno_exit("AcceptEx failed with error:");
+		}
+	}
 }

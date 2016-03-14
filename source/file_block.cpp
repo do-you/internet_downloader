@@ -12,8 +12,6 @@
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
-std::atomic_uint total_cache_size = ATOMIC_VAR_INIT(0);
-
 extern cache_control cache_controller;
 
 block::block(file_ma *parent, ptr_pair p)
@@ -33,6 +31,24 @@ block::block(file_ma *parent, ptr_pair p)
 
 block::~block()
 {
+	assert(buffer.len >= 0);
+	if (buffer.len > 0)
+	{
+		LARGE_INTEGER file_pos;
+		DWORD temp_len;
+		file_pos.QuadPart = this->file_ptr;
+		SetFilePointerEx(parent->hfile, file_pos, NULL, FILE_BEGIN);
+
+		if (0 == WriteFile(parent->hfile, buffer.buf, buffer.len, &temp_len, NULL))
+			util_errno_exit("回写文件出错");
+		assert(buffer.len == temp_len);
+
+		this->file_ptr += buffer.len;
+		parent->cache_size -= buffer.len;
+		cache_controller.decrease_cached_size(buffer.len);
+
+		buffer.len = 0;
+	}
 	delete[] buffer.buf;
 }
 
@@ -91,7 +107,8 @@ void block::fill(const char *buf, uint32_t len)
 
 	assert(len > 0);
 
-	while (len > 0) {
+	while (len > 0)
+	{
 		if (piece_size - buffer.len > len)//剩余空间足够
 		{
 			memcpy(buffer.buf + buffer.len, buf, len);
@@ -111,7 +128,7 @@ void block::fill(const char *buf, uint32_t len)
 			assert(buffer.len == piece_size);
 
 			cache_lock.lock();
-			cache_list.push_back(buffer);
+			cache_list.emplace_back(buffer.buf);
 			cache_lock.unlock();
 
 			//换新的
@@ -123,24 +140,27 @@ void block::fill(const char *buf, uint32_t len)
 	recv_ptr += len_bac;
 	//累加
 	parent->cache_size.fetch_add(len_bac);
-	uint32_t x = total_cache_size.fetch_add(len_bac);
-	if (x < max_cache_size && x + len_bac >= max_cache_size)
-		cache_controller.schedule();
+	cache_controller.increase_cached_size(len_bac);
 }
 
-void block::drain_all(uint32_t &had_drain)
+void block::drain_all()
 {
 	LARGE_INTEGER file_pos;
 	file_pos.QuadPart = this->file_ptr;
 	DWORD temp_len;
-	std::list<util_buf> temp_list;
+	uint32_t drain_len = 0;
+	bool comp = false;
+	std::list<std::unique_ptr<char[]>> temp_list;
 
 	SetFilePointerEx(parent->hfile, file_pos, NULL, FILE_BEGIN);
+
 	//清空cache_list
-	while (true) {
+	while (true)
+	{
 		cache_lock.lock();
 
-		if (cache_list.empty()) {
+		if (cache_list.empty())
+		{
 			cache_lock.unlock();
 			break;
 		}
@@ -149,26 +169,44 @@ void block::drain_all(uint32_t &had_drain)
 
 		cache_lock.unlock();
 
-		for (auto &x : temp_list) {
-			if (0 == WriteFile(parent->hfile, x.buf, x.len, &temp_len, NULL))
+		while (!temp_list.empty())
+		{
+			auto &x = temp_list.front();
+
+			if (0 == WriteFile(parent->hfile, x.get(), piece_size, &temp_len, NULL))
 				util_errno_exit("回写文件出错");
-			this->file_ptr += x.len;
-			had_drain += x.len;
-			parent->cache_size -= x.len;
-			delete[] x.buf;
+			assert(piece_size == temp_len);
+
+			this->file_ptr += piece_size;
+			drain_len += piece_size;
+
+			temp_list.pop_front();
 		}
-		temp_list.clear();
 	}
+
 	//检测是否完成
 	assert(this->recv_ptr <= this->end_ptr);
-	if (this->recv_ptr >= this->end_ptr) {
-		if (0 == WriteFile(parent->hfile, buffer.buf, buffer.len, &temp_len, NULL))
-			util_errno_exit("回写文件出错");
-		this->file_ptr += buffer.len;
-		had_drain += buffer.len;
-		parent->cache_size -= buffer.len;
-		buffer.len = 0;
 
+	if (this->recv_ptr >= this->end_ptr)
+	{
+		comp = true;
+		if (buffer.len > 0)
+		{
+			if (0 == WriteFile(parent->hfile, buffer.buf, buffer.len, &temp_len, NULL))
+				util_errno_exit("回写文件出错");
+			assert(buffer.len == temp_len);
+
+			this->file_ptr += buffer.len;
+			drain_len += buffer.len;
+			buffer.len = 0;
+		}
+	}
+
+	parent->cache_size -= drain_len;
+	cache_controller.decrease_cached_size(drain_len);
+
+	if (comp)
+	{
 		parent->notify(this, (int)block_evcode::complete, NULL, NULL);
 		delete this;
 	}

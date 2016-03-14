@@ -33,7 +33,7 @@ void down_task::notify(net_io *which, int evcode, void *parm, const char *msg)
 	switch (evcode)
 	{
 		case (int)net_evcode::had_puase:
-			cache_controller.in_advance(progress);
+			cache_controller.enqueue(progress);
 			parent->notify(info, (int)down_task_evcode::had_puase, NULL, NULL);
 			break;
 		case (int)net_evcode::get_file_info:
@@ -54,13 +54,13 @@ void down_task::notify(net_io *which, int evcode, void *parm, const char *msg)
 			break;
 		}
 		case (int)net_evcode::complete:
-			cache_controller.set_async_check_out(progress);
-			cache_controller.in_advance(progress);
+			cache_controller.enqueue(progress);
+			cache_controller.check_out(progress);
 			parent->notify(info, (int)down_task_evcode::receive_complete, NULL, NULL);
 			break;
 		case (int)net_evcode::fail:
-			cache_controller.set_async_check_out(progress);
-			cache_controller.in_advance(progress);
+			cache_controller.enqueue(progress);
+			cache_controller.check_out(progress);
 			parent->notify(info, (int)down_task_evcode::fail, parm, msg);
 			break;
 		default:
@@ -91,6 +91,8 @@ uint32_t down_task::get_new_recv()
 {
 	return net_ma.get_new_recv();
 }
+
+
 
 void task_info::start(Internet_Downloader *parent)
 {

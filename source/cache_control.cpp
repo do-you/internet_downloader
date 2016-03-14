@@ -9,8 +9,6 @@
 #include "down_task.h"
 
 cache_control cache_controller;
-extern std::atomic_uint total_cache_size;
-
 
 cache_control::cache_control()
 {
@@ -20,17 +18,17 @@ cache_control::cache_control()
 
 cache_control::~cache_control()
 {
-	terminal = true;
+	task_lock.lock();//lock
 
-	check_lock.lock();//lock
-	should_drain = true;
+	terminal = true;
 	start_drain.notify_one();
-	check_lock.unlock();//unlock
+
+	task_lock.unlock();//unlock
 
 	drain_thread.join();
 }
 
-void cache_control::check_in(std::shared_ptr<file_ma> fl)
+void cache_control::check_in(std::shared_ptr<file_ma> &fl)
 {
 	task_lock.lock();//lock
 
@@ -40,74 +38,90 @@ void cache_control::check_in(std::shared_ptr<file_ma> fl)
 	task_lock.unlock();//unlock
 }
 
-void cache_control::set_async_check_out(std::shared_ptr<file_ma> fl)
+void cache_control::check_out(std::shared_ptr<file_ma> &fl)
 {
-	fl->async_out = true;
+	task_lock.lock();//lock
+
+	assert(cache_set.count(fl) == 1);
+	cache_set.erase(fl);
+
+	task_lock.unlock();//unlock
 }
 
 void cache_control::schedule()
 {
-	check_lock.lock();
+	task_lock.lock();
 
 	start_drain.notify_one();
 
-	check_lock.unlock();
+	task_lock.unlock();
 }
 
-void cache_control::in_advance(std::shared_ptr<file_ma> fl)
+void cache_control::enqueue(std::shared_ptr<file_ma> &fl)
 {
 	task_lock.lock();
-	fl->in_advance = true;
-	task_lock.unlock();
 
-	check_lock.lock();
-	should_drain = true;
+	assert(priority_queue.count(fl) == 0);
+	priority_queue.insert(fl);
 	start_drain.notify_one();
-	check_lock.unlock();
+
+	task_lock.unlock();
+}
+
+void cache_control::increase_cached_size(uint32_t n)
+{
+	auto x = total_cache_size.fetch_add(n);
+	if (x < max_cache_size && x + n >= max_cache_size)
+		cache_controller.schedule();
+}
+
+void cache_control::decrease_cached_size(uint32_t n)
+{
+	total_cache_size -= n;
 }
 
 void cache_control::drain()
 {
-	uint32_t had_drain = 0;
-
 	while (true)
 	{
-		if (terminal)
-			return;
+		std::shared_ptr<file_ma> target;
 
-		check_lock.lock();//lock
+		while (true)
+		{
+			lock_guard<std::mutex> _lock(task_lock);
 
-		if (should_drain == false && total_cache_size < max_cache_size)
-			start_drain.wait(check_lock);
-		should_drain = false;
+			if (terminal)
+				return;
 
-		check_lock.unlock();//unlock
-
-		if (terminal)
-			return;
-
-		task_lock.lock();//lock
-
-		auto res = std::max_element(cache_set.begin(), cache_set.end(), [](std::shared_ptr<file_ma> a, std::shared_ptr<file_ma> b){
-			if (a->in_advance)
-				return false;
-			else if (b->in_advance)
-				return true;
+			if (priority_queue.empty())
+			{
+				if (total_cache_size < max_cache_size)
+					start_drain.wait(task_lock);
+				else
+				{
+					auto res = std::max_element(cache_set.begin(), cache_set.end(), [](const std::shared_ptr<file_ma> &a, const std::shared_ptr<file_ma> &b){
+						return a->getcachesize() < b->getcachesize();
+					});
+					if (res != cache_set.end())
+					{
+						target = *res;
+						break;
+					}
+				}
+			}
 			else
-				return a->getcachesize() < b->getcachesize();
-		});
+			{
+				auto x = priority_queue.begin();
+				target = std::move(*x);
+				priority_queue.erase(x);
+				break;
+			}
+		}
 
-		assert(res != cache_set.end());
-		auto target = *res;
-		if (target->async_out)
-			cache_set.erase(res);
+		assert(target);
 
-		task_lock.unlock();//unlock
-
-		_DEBUG_OUT("task[%p] start drain\n", target->parent->get_guid());
-		target->do_write_back(had_drain);
-		_DEBUG_OUT("%u had drain\n", had_drain);
-		total_cache_size -= had_drain;
-		had_drain = 0;
+		_DEBUG_OUT("task[%p] start drain,%u had cached\n", target->parent->get_guid(), total_cache_size);
+		target->do_write_back();
+		_DEBUG_OUT("%u left\n", total_cache_size);
 	}
 }

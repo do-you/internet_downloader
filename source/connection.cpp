@@ -152,7 +152,7 @@ void connection::parse_header(char *buf, uint64_t len)
 					{
 						if (!_strnicmp(parms_start, "content-length", 14))
 						{
-							parms->file_len = strtoull(parms_start + 15, &parms_end,10);
+							parms->file_len = strtoull(parms_start + 15, &parms_end, 10);
 							read_len = true;
 						}
 						else if (!_strnicmp(parms_start, "content-disposition", 19))
@@ -187,7 +187,10 @@ void connection::parse_header(char *buf, uint64_t len)
 						return;
 					}
 					else
+					{
+						_DEBUG_OUT("%s", buf);
 						util_err_exit("头部解析错误");
+					}
 				}
 				else
 				{

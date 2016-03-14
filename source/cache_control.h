@@ -17,24 +17,31 @@ class cache_control
 public:
 	cache_control();
 	~cache_control();
-	void check_in(std::shared_ptr<file_ma> fl);
-	void set_async_check_out(std::shared_ptr<file_ma> fl);
-	void schedule();
-	void in_advance(std::shared_ptr<file_ma> fl);
+
+	void check_in(std::shared_ptr<file_ma> &fl);
+	void check_out(std::shared_ptr<file_ma> &fl);
+	//一次性的
+	void enqueue(std::shared_ptr<file_ma> &fl);
+
+	void increase_cached_size(uint32_t n);
+	void decrease_cached_size(uint32_t n);
+
 protected:
 	void drain();
+	void schedule();
 
 private:
 	bool terminal;
 	bool should_drain;
 	boost::thread drain_thread;
 
-// 	using cache_ite = std::unordered_set<file_ma*>::const_iterator;
 	std::unordered_set<std::shared_ptr<file_ma>> cache_set;
+	std::unordered_set<std::shared_ptr<file_ma>> priority_queue;
 
 	std::mutex task_lock;
-	std::mutex check_lock;
 	std::condition_variable_any start_drain;
+
+	std::atomic_uint total_cache_size;
 };
 
 

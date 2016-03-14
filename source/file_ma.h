@@ -18,7 +18,8 @@ bool front_first(block* a, block* b);
 
 enum class file_evcode
 {
-	complete
+	complete,
+	all_drain
 };
 
 class file_ma
@@ -28,12 +29,11 @@ public:
 	~file_ma();
 
 	std::list<block*> init();
-
-	void write_progress();
-
+	
 	void notify(block *which, int evcode, void *parm, void *parm2);
 protected:
 	void file_init(path &path1, path &path2, int flag);
+	void write_progress();
 
 private:
 	bool had_init;
@@ -59,11 +59,8 @@ private:
 
 private://由cache_control调用
 	friend class cache_control;
-	void do_write_back(uint32_t &had_drain);
+	void do_write_back();
 	uint32_t getcachesize();
-
-	bool in_advance;
-	bool async_out;
 
 private://由block调用
 	friend class block;

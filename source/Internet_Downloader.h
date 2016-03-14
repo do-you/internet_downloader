@@ -43,6 +43,13 @@ public:
 
 	void notify(task_info*ptr, int evcode, void *parm, const char *msg);
 
+
+public:
+	void getGlobalStat()
+	{
+
+	}
+
 private:
 	task_info* guid_convert(size_t guid);
 	void try_start(task_info *task);

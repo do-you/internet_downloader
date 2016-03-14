@@ -111,9 +111,26 @@ void net_io::notify(connection *which, int evcode, void *parm, const char *msg)
 				parent->notify(this, (int)net_evcode::complete, NULL, NULL);
 			break;
 		}
-		case (int)connection_evcode::failed://要很多处理
-			parent->notify(this, (int)net_evcode::fail, NULL, msg);
+		case (int)connection_evcode::failed://要很多处理,剩余连接数为零才向上传递
+		{
+			_DEBUG_OUT("connection[%p] failed:%s\n",which, msg);
+
+			bool empty = false;
+
+			connection_map_lock.lock();
+
+			auto x = connection_map.find(which);
+			assert(x!=connection_map.end());
+			alloc_list.push_back(x->second);
+			connection_map.erase(x);
+			empty = connection_map.empty();
+
+			connection_map_lock.unlock();
+
+			if (empty)
+				parent->notify(this, (int)net_evcode::fail, NULL, msg);
 			break;
+		}
 		case (int)connection_evcode::pause:
 			if (--pause_discout == 0)
 			{

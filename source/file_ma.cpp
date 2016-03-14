@@ -21,7 +21,7 @@ file_ma::file_ma(down_task *parent, task_info *parms) :block_set(front_first)
 	this->parent = parent;
 	this->parms = parms;
 
-	had_complete = async_out = in_advance = had_init = false;
+	had_complete = had_init = false;
 }
 
 file_ma::~file_ma()
@@ -30,6 +30,9 @@ file_ma::~file_ma()
 
 	if (had_init)
 	{
+		for (auto x : block_set)
+			delete x;
+
 		if (0 == UnmapViewOfFile(profile_buf))
 			util_errno_exit("UnmapViewOfFile fail:");
 		if (0 == CloseHandle(hprofilemap))
@@ -45,6 +48,8 @@ file_ma::~file_ma()
 			remove(temp);
 		}
 	}
+
+	_DEBUG_OUT("%u had left", cache_size);
 }
 
 std::list<block*> file_ma::init()
@@ -176,7 +181,7 @@ void file_ma::file_init(path &path1, path &path2, int flag)
 	had_init = true;
 }
 
-void file_ma::do_write_back(uint32_t &had_drain)
+void file_ma::do_write_back()
 {
 	std::list<block*> temp_list;
 
@@ -188,7 +193,7 @@ void file_ma::do_write_back(uint32_t &had_drain)
 	block_set_lock.unlock();
 
 	for (auto x : temp_list)
-		x->drain_all(had_drain);
+		x->drain_all();
 
 	write_progress();
 }
@@ -197,11 +202,6 @@ uint32_t file_ma::getcachesize()
 {
 	return cache_size;
 }
-
-// void file_ma::drain_all()
-// {
-// 	cache_controller.in_advance(this);
-// }
 
 void file_ma::notify(block *which, int evcode, void *parm, void *parm2)
 {

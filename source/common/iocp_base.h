@@ -28,3 +28,4 @@ void async_writefile(HANDLE fd, overlapped_base &sess, char *buffer, int len);
 bool connect_to_server(SOCKET fd,uri_info &info);
 
 void async_read(SOCKET fd, overlapped_base & sess, char * buffer, int len);
+void async_accept(SOCKET listen_sc, SOCKET accept_sc, overlapped_base & sess);

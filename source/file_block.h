@@ -4,7 +4,9 @@
 #include <stdint.h>
 #include <list>
 #include <mutex>
+#include <memory>
 #include "utility.h"
+#include "global_def.h"
 
 using ptr_pair = std::pair<uint64_t, uint64_t>;
 
@@ -28,7 +30,7 @@ public:
 	uint64_t len() const;
 
 	void fill(const char* buf, uint32_t len);
-	void drain_all(uint32_t &had_drain);
+	void drain_all();
 
 	block *next;
 	block *pre;
@@ -42,7 +44,7 @@ private:
 	uint64_t file_ptr;
 	uint64_t end_ptr;
 
-	std::list<util_buf> cache_list;
+	std::list<std::unique_ptr<char[]>> cache_list;
 	std::mutex cache_lock;
 };
 
