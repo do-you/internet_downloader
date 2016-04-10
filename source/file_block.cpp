@@ -186,7 +186,6 @@ void block::drain_all()
 
 	//检测是否完成
 	assert(this->recv_ptr <= this->end_ptr);
-
 	if (this->recv_ptr >= this->end_ptr)
 	{
 		comp = true;

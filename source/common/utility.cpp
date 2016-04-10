@@ -4,6 +4,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <string>
+#include <assert.h>
+#include <stdexcept>
 
 void util_err_exit(char const* ErrMsg)
 {
@@ -78,4 +80,45 @@ struct addrinfo * util_getaddrinfo(char const* host, char const* port, int famil
 	returnval = getaddrinfo(host, port, &hints, &result);
 
 	return returnval == 0 ? result : NULL;
+}
+
+char to_hex(uint8_t x)
+{
+	static const char res[] = { '0','1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+	assert(x >= 0 && x < 16);
+	return res[x];
+}
+
+std::string decimal_to_hex(uint64_t x)
+{
+	char res[16];
+	for (int i = 15; i >= 0; --i)
+	{
+		res[i] = to_hex(x & 0xF);
+		x >>= 4;
+	}
+	return std::string(res, 16);
+}
+
+uint64_t hex_to_decimal(std::string str)
+{
+	uint64_t res = 0;
+	if (str.length() > 0 && str.length() <= 16)
+	{
+		for (auto x : str)
+		{
+			res <<= 4;
+			if (x >= '0'&&x <= '9')
+				res |= (x - '0');
+			else if (x >= 'a'&&x <= 'f')
+				res |= (x - 'a' + 10);
+			else if (x >= 'A'&&x <= 'F')
+				res |= (x - 'A' + 10);
+			else
+				throw std::runtime_error("非法的字符串");
+		}
+		return res;
+	}
+	else
+		throw std::runtime_error("非法的字符串");
 }

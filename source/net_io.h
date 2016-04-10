@@ -1,15 +1,11 @@
 ﻿#ifndef NET_IO_H
 #define NET_IO_H
 
-#include <forward_list>
 #include <functional>
-#include <string>
 #include <unordered_map>
 #include <boost/filesystem.hpp>
 #include <mutex>
 #include <atomic>
-#include "uri_parse.h"
-#include "util_container.h"
 #include "connection.h"
 using namespace std;
 using namespace boost::filesystem;
@@ -30,19 +26,18 @@ class net_io
 public:
 	net_io(down_task *parent, task_info *parms);
 
+	//控制函数
 	void start();
 	void pause();
-
-	int  get_split_count();
-
+	void async_get_file_info();
+	void init(std::list<block*> block_list);
 	void notify(connection *which, int evcode, void *parm, const char *msg);
 
-	void async_get_file_info();
-
-	void init(std::list<block*> block_list);
+	//状态函数
+	int  get_split_count();
+	uint32_t get_new_recv();
 
 	void submit_recv(uint32_t n);
-	uint32_t get_new_recv();
 
 protected:
 	connection* split();

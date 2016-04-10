@@ -2,9 +2,8 @@
 #define UTILITY_H
 
 #include <WinSock2.h>
-#include <windows.h>
-#include <ws2tcpip.h>
 #include <string>
+#include <stdint.h>
 
 #ifdef _WIN32_WINNT
 #define util_buf WSABUF
@@ -22,11 +21,14 @@ int util_geterror();
 
 void util_errno_exit(char const * ErrMsg);
 
-void util_w32_init();
-
 bool util_utf8_to_acp(std::string utf8_str, std::string &outstr);
 
 addrinfo* util_getaddrinfo(char const * host, char const * port, int family, int socktype, int protocol);
+
+char to_hex(uint8_t x);
+
+std::string decimal_to_hex(uint64_t x);
+uint64_t hex_to_decimal(std::string str);
 
 #endif // UTILITY_H
 

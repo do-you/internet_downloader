@@ -16,7 +16,7 @@ struct parm_implement
 	}
 };
 
-std::pair<const parm_implement*, const parm_implement*> search_opt(const parm_implement* start, const parm_implement* end, string value);
+// std::pair<const parm_implement*, const parm_implement*> search_opt(const parm_implement* start, const parm_implement* end, string value);
 std::pair<const parm_implement*, const parm_implement*> search_opt(string value);
 int result_count(std::pair<const parm_implement*, const parm_implement*> &a);
 

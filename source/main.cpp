@@ -2,9 +2,10 @@
 #include <list>
 #include "iocp_base.h"
 #include "Internet_Downloader.h"
+#include "global_state_cache.h"
 using namespace std;
 
-list<down_parm> parse_arg(int argc, char *argv[], uri_info &info)
+list<down_parm> parse_arg(int argc, char *argv[], string &url)
 {
 	list<down_parm> temp_parm;
 	bool have_url = false;
@@ -20,10 +21,8 @@ list<down_parm> parse_arg(int argc, char *argv[], uri_info &info)
 		}
 		else//url
 		{
-			if (!parseUrl(argv[i], info))
-				util_err_exit("非法的url");
-			else
-				have_url = true;
+			url.assign(argv[i]);
+			have_url = true;
 		}
 	}
 
@@ -37,26 +36,31 @@ int main(int argc, char *argv[])
 {
 	win32_init();
 
-	uri_info info;
-	auto x = parse_arg(argc, argv, info);
+// 	string uri;
+// 	auto x = parse_arg(argc, argv, uri);
 
 	Internet_Downloader idm;
-	auto guid = idm.add_task(info, x);
+	global_state_cache provider(&idm);
+	json_rpc json_rpc_server(&provider);
+
+	json_rpc_server.start_listening();
+
+// 	auto guid = idm.add_task(uri, x);
 
 	// 	Sleep(3000);
 	// 	_DEBUG_OUT("call pause\n");
 	// 	idm.pause_task(guid);
 	// 	Sleep(3000);
 	// 	idm.start_task(guid);
-	while (true)
-	{
-		Sleep(1000);
-		auto x = idm.get_new_recv();
-		for (auto &y : x)
-		{
-			printf("task[%p]:speed %.2lf KB/s\n", y.first, (double)y.second / 1024);
-		}
-	}
+// 	while (true)
+// 	{
+// 		Sleep(1000);
+// 		auto x = idm.get_new_recv();
+// 		for (auto &y : x)
+// 		{
+// 			printf("task[%p]:speed %.2lf KB/s\n", y.first, (double)y.second / 1024);
+// 		}
+// 	}
 
 	win32_loop();
 	return 0;

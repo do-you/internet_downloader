@@ -7,6 +7,7 @@
 #include "net_io.h"
 #include "file_ma.h"
 #include "uri_parse.h"
+#include "task_schedule.h"
 using namespace std;
 using namespace boost::filesystem;
 
@@ -26,6 +27,7 @@ class down_task
 {
 public:
 	down_task(Internet_Downloader *parent, task_info* info);
+	~down_task();
 
 	void start();
 	void pause();
@@ -35,16 +37,21 @@ public:
 	void notify(file_ma *which, int evcode, void *parm, const char *msg);
 	void notify(net_io *which, int evcode, void *parm, const char *msg);
 
+	//for debug
 	size_t get_guid();
+	//net
 	uint32_t get_new_recv();
-protected:
+	int  get_split_count();
+	//file
+	uint32_t get_numPieces();
+	std::string get_bitfield(uint32_t &remain_len);
+
 private:
 	Internet_Downloader *parent;
 	task_info* info;
 	shared_ptr<file_ma> progress;
 	net_io  net_ma;
 
-	// 	bool net_comp;
 	bool had_init;
 };
 
@@ -66,7 +73,7 @@ struct task_info
 		finish,
 		fail
 	}statues;
-	std::mutex _lock;
+	std::recursive_mutex _lock;
 
 	//net_parms的内容
 	int split;
@@ -76,14 +83,16 @@ struct task_info
 
 	//file_parms的内容
 	int min_split_size;
-	path dir;
+	string dir;
 
 	//公共
 	string file_name;
 	uint64_t file_len;
 
-	task_info* next;
-	task_info* pre;
+	uint64_t complete_length;
+	string bitfile;
+// 	task_info* next;
+// 	task_info* pre;
 };
 
 #endif // DOWN_TASK_H

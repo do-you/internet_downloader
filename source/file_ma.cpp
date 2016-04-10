@@ -1,6 +1,6 @@
 ﻿#include <boost/filesystem.hpp>
+#include <boost/locale.hpp>
 #include <string>
-#include <algorithm>
 #include <atomic>
 #include "file_ma.h"
 #include "utility.h"
@@ -43,13 +43,13 @@ file_ma::~file_ma()
 			util_errno_exit("CloseHandle fail:");
 		if (had_complete)
 		{
-			path temp = parms->dir;
+			path temp = boost::locale::conv::utf_to_utf<wchar_t>(parms->dir);
 			temp /= parms->file_name + ".abc";
 			remove(temp);
 		}
 	}
 
-	_DEBUG_OUT("%u had left", cache_size);
+	_DEBUG_OUT("%u had left", cache_size.load());
 }
 
 std::list<block*> file_ma::init()
@@ -66,7 +66,7 @@ std::list<block*> file_ma::init()
 
 	while (++i)
 	{
-		temppath2 = temppath = parms->dir;
+		temppath2 = temppath = boost::locale::conv::utf_to_utf<wchar_t>(parms->dir);
 		bool file_exit = exists(temppath /= parms->file_name);
 		bool record_exit = exists(temppath2 /= parms->file_name + ".abc");
 		if (!file_exit)//文件不存在
@@ -231,4 +231,42 @@ void file_ma::notify(block *which, int evcode, void *parm, void *parm2)
 			util_err_exit("无效的事件");
 			break;
 	}
+}
+
+uint32_t file_ma::get_numPieces()
+{
+	return block_set.size();
+}
+std::string file_ma::get_bitfield(uint32_t &remain_len)
+{
+	if (had_init)
+	{
+		uint32_t ptr = 0;
+		remain_len = 0;
+		uint32_t size = ceil((long double)parms->file_len / parms->min_split_size);
+		unique_ptr<char[]> res = make_unique<char[]>(size);
+		memset(res.get(), 'F', size);
+		lock_guard<mutex> _lock(block_set_lock);
+
+		for (auto x : block_set)
+		{
+			remain_len += x->len();
+
+			ptr = x->begin() / parms->min_split_size;
+
+			uint32_t y = x->begin() % parms->min_split_size;
+			if (y > 0)
+			{
+				res[ptr] = to_hex(y * 16 / parms->min_split_size);
+				++ptr;
+			}
+
+			uint32_t x2 = ceill((long double)x->end() / parms->min_split_size);
+			memset(res.get() + ptr, '0', x2 - ptr);
+			ptr = x2;
+		}
+		return string(res.get(), size);
+	}
+	else
+		return string();
 }

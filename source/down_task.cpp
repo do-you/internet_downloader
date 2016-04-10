@@ -11,6 +11,19 @@ down_task::down_task(Internet_Downloader *parent, task_info* info) :progress(new
 	had_init = false;
 }
 
+down_task::~down_task()
+{
+	try
+	{
+		cache_controller.enqueue(progress);
+		cache_controller.check_out(progress);
+	}
+	catch (exception &e)
+	{
+		_DEBUG_OUT("%s\n", e.what());
+	}
+}
+
 void down_task::start()
 {
 	assert(had_init);
@@ -54,13 +67,27 @@ void down_task::notify(net_io *which, int evcode, void *parm, const char *msg)
 			break;
 		}
 		case (int)net_evcode::complete:
-			cache_controller.enqueue(progress);
-			cache_controller.check_out(progress);
+			try
+			{
+				cache_controller.enqueue(progress);
+				cache_controller.check_out(progress);
+			}
+			catch (exception &e)
+			{
+				_DEBUG_OUT("%s\n",e.what());
+			}
 			parent->notify(info, (int)down_task_evcode::receive_complete, NULL, NULL);
 			break;
 		case (int)net_evcode::fail:
-			cache_controller.enqueue(progress);
-			cache_controller.check_out(progress);
+			try
+			{
+				cache_controller.enqueue(progress);
+				cache_controller.check_out(progress);
+			}
+			catch (exception &e)
+			{
+				_DEBUG_OUT("%s\n", e.what());
+			}
 			parent->notify(info, (int)down_task_evcode::fail, parm, msg);
 			break;
 		default:
@@ -92,7 +119,20 @@ uint32_t down_task::get_new_recv()
 	return net_ma.get_new_recv();
 }
 
+int down_task::get_split_count()
+{
+	return net_ma.get_split_count();
+}
 
+uint32_t down_task::get_numPieces()
+{
+	return progress->get_numPieces();
+}
+
+std::string down_task::get_bitfield(uint32_t &remain_len)
+{
+	return progress->get_bitfield(remain_len);
+}
 
 void task_info::start(Internet_Downloader *parent)
 {

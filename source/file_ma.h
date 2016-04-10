@@ -2,11 +2,9 @@
 #define FILE_MA_H
 
 #include <stdint.h>
-#include <string>
 #include <set>
 #include <list>
 #include <boost/filesystem.hpp>
-#include <algorithm>
 #include <atomic>
 #include "file_block.h"
 using namespace boost::filesystem;
@@ -29,8 +27,12 @@ public:
 	~file_ma();
 
 	std::list<block*> init();
-	
 	void notify(block *which, int evcode, void *parm, void *parm2);
+
+	//状态函数
+	uint32_t get_numPieces();
+	std::string get_bitfield(uint32_t &remain_len);
+
 protected:
 	void file_init(path &path1, path &path2, int flag);
 	void write_progress();

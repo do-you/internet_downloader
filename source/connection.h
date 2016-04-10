@@ -1,10 +1,6 @@
 ﻿#ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include <functional>
-#include <unordered_map>
-#include <chrono>
-#include <string>
 #include "uri_parse.h"
 #include "iocp_base.h"
 #include "global_def.h"

@@ -1,8 +1,8 @@
-﻿#include <algorithm>
+﻿#include "cache_control.h"
+#include <algorithm>
 #include <assert.h>
 #include <atomic>
 #include <boost/thread.hpp>
-#include "cache_control.h"
 #include "file_block.h"
 #include "global_def.h"
 #include "file_ma.h"
@@ -40,12 +40,14 @@ void cache_control::check_in(std::shared_ptr<file_ma> &fl)
 
 void cache_control::check_out(std::shared_ptr<file_ma> &fl)
 {
-	task_lock.lock();//lock
+	std::unique_lock<std::mutex> _lock(task_lock);
 
-	assert(cache_set.count(fl) == 1);
-	cache_set.erase(fl);
+	decltype(cache_set)::iterator itr;
 
-	task_lock.unlock();//unlock
+	if ((itr = cache_set.find(fl)) == cache_set.end())
+		throw runtime_error("not found in queue");
+	else
+		cache_set.erase(itr);
 }
 
 void cache_control::schedule()
@@ -59,13 +61,15 @@ void cache_control::schedule()
 
 void cache_control::enqueue(std::shared_ptr<file_ma> &fl)
 {
-	task_lock.lock();
+	std::unique_lock<std::mutex> _lock(task_lock);
 
-	assert(priority_queue.count(fl) == 0);
-	priority_queue.insert(fl);
-	start_drain.notify_one();
-
-	task_lock.unlock();
+	if (priority_queue.count(fl) != 0)
+		throw runtime_error("already enqueue\n");
+	else
+	{
+		priority_queue.insert(fl);
+		start_drain.notify_one();
+	}
 }
 
 void cache_control::increase_cached_size(uint32_t n)
@@ -99,7 +103,7 @@ void cache_control::drain()
 					start_drain.wait(task_lock);
 				else
 				{
-					auto res = std::max_element(cache_set.begin(), cache_set.end(), [](const std::shared_ptr<file_ma> &a, const std::shared_ptr<file_ma> &b){
+					auto res = std::max_element(cache_set.begin(), cache_set.end(), [](const std::shared_ptr<file_ma> &a, const std::shared_ptr<file_ma> &b) {
 						return a->getcachesize() < b->getcachesize();
 					});
 					if (res != cache_set.end())

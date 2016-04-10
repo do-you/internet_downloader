@@ -6,7 +6,6 @@
 #include <mutex>
 #include <memory>
 #include "utility.h"
-#include "global_def.h"
 
 using ptr_pair = std::pair<uint64_t, uint64_t>;
 

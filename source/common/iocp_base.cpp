@@ -97,7 +97,8 @@ void win32_init()
 
 	init_extent_func();
 
-	nthreads = std::thread::hardware_concurrency() * 2;
+ 	nthreads = std::thread::hardware_concurrency() * 2;
+// 	nthreads = 1;
 	workers = new std::thread[nthreads];
 	for (int i = 0; i < nthreads; i++)
 		workers[i] = std::thread(worker);
