@@ -24,4 +24,6 @@ future:
 界面：命令行  
 支持的下载协议：HTTP（trunk模式暂未实现）  
 实现的特性：磁盘缓存，断点续存，多线程，多任务  
-未来的工作：兼容aria2的web前端
+未来的工作：兼容aria2的web前端  
+
+YAAW :https://github.com/binux/yaaw
