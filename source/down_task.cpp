@@ -1,4 +1,4 @@
-﻿#include "down_task.h"
+#include "down_task.h"
 #include "Internet_Downloader.h"
 #include "cache_control.h"
 
@@ -15,8 +15,8 @@ down_task::~down_task()
 {
 	try
 	{
-		cache_controller.enqueue(progress);
 		cache_controller.check_out(progress);
+		cache_controller.enqueue(progress);
 	}
 	catch (exception &e)
 	{
