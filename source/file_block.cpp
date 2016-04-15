@@ -68,7 +68,8 @@ std::list<block *> block::divide(uint32_t n, uint32_t min_split_size)
 
 	assert(block_count >= 0);
 
-	if (block_count > 1) {
+	if (block_count > 1) 
+	{
 		uint64_t piece_len = (end_ptr - recv_ptr_bac) / block_count;
 
 		uint64_t end_ptr_bac = end_ptr;

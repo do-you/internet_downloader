@@ -1,4 +1,4 @@
-#include "down_task.h"
+﻿#include "down_task.h"
 #include "Internet_Downloader.h"
 #include "cache_control.h"
 

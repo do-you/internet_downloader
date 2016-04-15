@@ -1,4 +1,4 @@
-#include <boost/filesystem.hpp>
+﻿#include <boost/filesystem.hpp>
 #include <boost/locale.hpp>
 #include <string>
 #include <atomic>
