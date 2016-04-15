@@ -9,7 +9,7 @@
 #include "task_schedule.h"
 using namespace boost::filesystem;
 
-static conf global_conf = { u8"F:\\文件传输测试", 16 * 1024 * 1024, 1, 2 * 1024 * 1024, 1 };
+static conf global_conf = { u8"F:\\文件传输测试", 16 * 1024 * 1024, 4, 2 * 1024 * 1024, 4 };
 
 
 Internet_Downloader::Internet_Downloader() :Internet_Downloader(global_conf) {}
