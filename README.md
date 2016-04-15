@@ -1,5 +1,8 @@
 # internet_downloader
-这是一个windows平台上用c++写的基于IOCP的HTTP下载器
+这是一个windows平台上用c++写的基于IOCP的HTTP下载器 
+
+与aria2兼容(只实现了部分参数),aria2:https://github.com/tatsuhiro-t/aria2  
+兼容web前端，YAAW :https://github.com/binux/yaaw  
 
 #进度
 
@@ -26,4 +29,4 @@ future:
 实现的特性：磁盘缓存，断点续存，多线程，多任务  
 未来的工作：兼容aria2的web前端  
 
-YAAW :https://github.com/binux/yaaw
+
