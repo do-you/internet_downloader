@@ -1,4 +1,4 @@
-﻿#include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/locale.hpp>
 #include <string>
 #include <atomic>
@@ -148,11 +148,11 @@ void file_ma::check_in(block* p)
 
 void file_ma::file_init(path &path1, path &path2, int flag)
 {
-	hfile = CreateFile(path1.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, flag, FILE_ATTRIBUTE_NORMAL, NULL);
+	hfile = CreateFile(path1.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, flag, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (INVALID_HANDLE_VALUE == hfile)
 		util_errno_exit("CreateFileA fail:");
 
-	hprofile = CreateFile(path2.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, flag, FILE_ATTRIBUTE_NORMAL, NULL);
+	hprofile = CreateFile(path2.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, flag, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (INVALID_HANDLE_VALUE == hprofile)
 		util_errno_exit("CreateFileA fail:");
 
