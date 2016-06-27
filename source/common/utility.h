@@ -4,6 +4,7 @@
 #include <WinSock2.h>
 #include <string>
 #include <stdint.h>
+#include <ws2tcpip.h>
 
 #ifdef _WIN32_WINNT
 #define util_buf WSABUF
@@ -22,6 +23,8 @@ int util_geterror();
 void util_errno_exit(char const * ErrMsg);
 
 bool util_utf8_to_acp(std::string utf8_str, std::string &outstr);
+
+bool util_acp_to_utf8(std::string acp_str, std::string &outstr);
 
 addrinfo* util_getaddrinfo(char const * host, char const * port, int family, int socktype, int protocol);
 

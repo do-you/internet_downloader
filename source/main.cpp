@@ -3,34 +3,38 @@
 #include "iocp_base.h"
 #include "Internet_Downloader.h"
 #include "global_state_cache.h"
+
 using namespace std;
 
-list<down_parm> parse_arg(int argc, char *argv[], string &url)
+list <down_parm> parse_arg(int argc, char *argv[], string &url)
 {
-	list<down_parm> temp_parm;
-	bool have_url = false;
+    list <down_parm> temp_parm;
+    bool have_url = false;
 
-	for (int i = 1; i < argc; ++i)
-	{
-		if (argv[i][0] == '-')
-		{
-			if (i + 1 < argc && argv[i + 1][0] != '-')
-				temp_parm.push_back({ argv[i] + 1, argv[++i] });
-			else
-				temp_parm.push_back({ argv[i] + 1, "true" });
-		}
-		else//url
-		{
-			url.assign(argv[i]);
-			have_url = true;
-		}
-	}
+    for (int i = 1; i < argc; ++i) {
+        if (argv[i][0] == '-') {
+            if (i + 1 < argc && argv[i + 1][0] != '-')
+            {
+                std::string utf8_str;
+                util_acp_to_utf8(argv[++i],utf8_str);
+                temp_parm.push_back({argv[i] + 1, utf8_str});
+            }
+            else
+                temp_parm.push_back({argv[i] + 1, "true"});
+        }
+        else//url
+        {
+            util_acp_to_utf8(argv[i],url);
+            have_url = true;
+        }
+    }
 
-	if (!have_url)
-		util_err_exit("请传入url");
+    if (!have_url)
+        util_err_exit("请传入url");
 
-	return temp_parm;
+    return temp_parm;
 }
+
 
 int main(int argc, char *argv[])
 {

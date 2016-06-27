@@ -124,8 +124,8 @@ void cache_control::drain()
 
 		assert(target);
 
-		_DEBUG_OUT("task[%p] start drain,%u had cached\n", target->parent->get_guid(), total_cache_size);
+		_DEBUG_OUT("task[%p] start drain,%u had cached\n", target->parent->get_guid(), total_cache_size.load());
 		target->do_write_back();
-		_DEBUG_OUT("%u left\n", total_cache_size);
+		_DEBUG_OUT("%u left\n", total_cache_size.load());
 	}
 }

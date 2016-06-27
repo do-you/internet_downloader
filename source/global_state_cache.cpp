@@ -54,7 +54,7 @@ std::list<task_state> global_state_cache::tellStopped()
 	return res;
 }
 
-task_state global_state_cache::tellStatus(string &gid)
+task_state global_state_cache::tellStatus(string gid)
 {
 	std::lock_guard<std::mutex> _lock(data_lock);
 
@@ -62,7 +62,7 @@ task_state global_state_cache::tellStatus(string &gid)
 	if ((ite = task_states.find(gid)) != task_states.end())
 		return ite->second;
 	else
-		throw invalid_argument(string("·Ç·¨µÄgid:") + gid);
+		throw invalid_argument(string("éæ³•çš„gid:") + gid);
 }
 
 size_t global_state_cache::add_task(string uri, list<down_parm> &parms)
@@ -92,13 +92,13 @@ void global_state_cache::do_gather()
 		uint32_t total_speed = 0, numactive = 0, numwait = 0, numstop = 0;
 
 		data_lock.lock();
-		//³õÊ¼»¯
+		//åˆå§‹åŒ–
 		task_states = target->getGlobalStat();
 		active_list.clear();
 		waitting_list.clear();
 		stopped_list.clear();
 
-		//¸üĞÂ
+		//æ›´æ–°
 		for (auto x = task_states.begin(); x != task_states.end(); ++x)
 		{
 			if (x->second.status == "active")

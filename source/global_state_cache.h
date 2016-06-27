@@ -18,7 +18,7 @@ public:
 	virtual std::list<task_state> tellActive() override;
 	virtual std::list<task_state> tellWaiting() override;
 	virtual std::list<task_state> tellStopped() override;
-	virtual task_state tellStatus(string &gid) override;
+	virtual task_state tellStatus(string gid) override;
 
 	virtual size_t add_task(string uri, list<down_parm> &parms) override;
 	virtual void start_task(size_t guid)override;

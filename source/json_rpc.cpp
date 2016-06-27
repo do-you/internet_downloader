@@ -70,7 +70,7 @@ json json_rpc::process(const string & method, json &parms)
 	json res;
 	if (method == "aria2.getGlobalStat")
 	{
-		auto &val = target->getGlobalStat();
+		auto val = target->getGlobalStat();
 		res["downloadSpeed"] = val.downloadSpeed;
 		res["numActive"] = val.numActive;
 		res["numStopped"] = val.numStopped;
@@ -103,7 +103,7 @@ json json_rpc::process(const string & method, json &parms)
 	}
 	else if (method == "aria2.getGlobalOption")
 	{
-		auto &val = target->getGlobalOption();
+		auto val = target->getGlobalOption();
 		res = {
 			{"dir" , val.dir},
 			{ "user-agent",val.user_agent },
@@ -153,7 +153,7 @@ json json_rpc::process(const string & method, json &parms)
 	return res;
 }
 
-json json_rpc::serialization(task_state &x)
+json json_rpc::serialization(task_state x)
 {
 	json task;
 
@@ -334,7 +334,7 @@ void client::complete_callback(int key, int nRecv, overlapped_base *over_base)
 
 
 				//返回结果的json
-				string &json = response_json.dump();
+				string json = response_json.dump();
 				string resp = http_response_header;
 				resp += string("Content-Length: ") + to_string(json.length()) + "\r\n\r\n";
 				resp += json;

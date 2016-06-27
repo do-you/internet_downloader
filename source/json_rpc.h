@@ -73,7 +73,7 @@ public:
 	virtual std::list<task_state> tellActive() = 0;
 	virtual std::list<task_state> tellWaiting() = 0;
 	virtual std::list<task_state> tellStopped() = 0;
-	virtual task_state tellStatus(std::string &gid) = 0;
+	virtual task_state tellStatus(string gid) = 0;
 
 	virtual size_t add_task(std::string uri, std::list<down_parm> &parms) = 0;
 	virtual void start_task(size_t guid) = 0;
@@ -91,7 +91,7 @@ public:
 	json process(const string & method, json &parms);
 
 protected:
-	json serialization(task_state &x);
+	json serialization(task_state x);
 
 private:
 	void complete_callback(int key, int nRecv, overlapped_base *over_base) override;
