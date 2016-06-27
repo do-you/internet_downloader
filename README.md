@@ -1,8 +1,6 @@
-# internet_downloader
+internet_downloader
 ===========================
 一个读(网络)写(文件)分离的下载器(后端)
-
-===========================
 
 Introduction
 ------------
