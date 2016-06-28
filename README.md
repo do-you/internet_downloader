@@ -33,9 +33,10 @@ Performance
 右aria2(中间那个小的波峰aria2已经开始了,只是阻塞在写文件)  | ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/3.png "右aria2")
 右迅雷  | ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/2.png "右迅雷")
 左DownThemAll!  | ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/1.png "左DownThemAll!")
-
+  
 Screenshot
 ------------
+编译器为mingw64-5.3.0
 ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/4.png "YAAW")
 
 Dependency
