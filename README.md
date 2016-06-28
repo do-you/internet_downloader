@@ -1,72 +1,49 @@
-# internet_downloader
-这是一个windows平台上用c++写的基于IOCP的HTTP下载器 
+internet_downloader
+===========================
+一个读(网络)写(文件)分离的下载器(后端)
 
-与aria2兼容(只实现了部分参数),aria2:https://github.com/tatsuhiro-t/aria2  
-兼容web前端(添加,删除,开始,暂停,显示状态)，YAAW :https://github.com/binux/yaaw  
+Introduction
+------------
+一个类似aria2的http下载器,功能上只实现了aria2的一个很小的子集.主要解决aria2文件分配时长时间阻塞的问题,前端为YAAW  
 
-结构示意图：  
-![image](https://github.com/do-you/internet_downloader/raw/master/picture/project_struct.png)  
+Features
+------------
+* 命令行界面
+* 硬盘缓存
+* 分块下载
+* 自动读取，保存进度
+* 自定义http头部
+* 不支持Chunked transfer encoding
+* 不支持gzip
+* JSON-RPC
 
-各个模块的功能：  
-#####common目录
->>里面放一些有用的小函数和全局配置  
+Screenshot
+------------
 
-#####client
->>负责接受网络上的json请求，并解析后提交给json_rpc处理，然后把结果传回去  
+Performance
+------------
+####**`测试结果仅供娱乐`**  
+测试过程：
+* 虚拟机中用ramdisk建盘存放一个1.45GB的文件，用IIS做http server
+* 虚拟机使用NAT模式
+* 在主机里下载,均下载到机械硬盘下同一目录
+* 测试中DownThemAll，迅雷为单线程下载
+* aria2,internet_downloader为4线程
+  
+说明|任务管理器(1%为80+MB/s)
+|---|---|----
+右aria2(中间那个小的波峰aria2已经开始了,只是阻塞在写文件)  | ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/3.png "右aria2")
+右迅雷  | ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/2.png "右迅雷")
+左DownThemAll!  | ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/1.png "左DownThemAll!")
 
-#####json_rpc
->>负责监听，每个连接对应一个client对象。调用Internet_Downloader的接口处理请求并把结果以json的格式返回给client  
+Dependency
+------------
+features | dependency
+|---|---|----
+json-rpc | nlohmann/json
+filesystem | boost
 
-#####Internet_Downloader
->>代表一个下载器，对外提供接口，对内管理各个下载任务  
-
-#####global_state_cache
->>json_rpc与Internet_Downloader中的一个缓冲层，分类并缓存从Internet_Downloader得到的全局信息以供json_rpc使用  
-
-#####task_schedule
->>Internet_Downloader中的任务调度逻辑组件  
-
-#####down_task
->>代表一个下载任务。  
-
-#####file_ma
->>代表要下载的文件，管理各个block  
-
-#####block
->>代表文件中的空缺块  
-
-#####net_io
->>管理多个connection  
-
-#####connection
->>实际的数据接收者，从网络上接收block指示范围内的数据并写进block里  
-
-#####cache_control
->>实际的数据回写者，记录已缓存数据的数量，并在达到上限值时启动自己的回写线程，回写已缓存数量最大的file_ma中的数据  
-
-#进度
-
-####ver 3.1.0dev  
-2016-4-10  
-updates:  
-实现了aria2 json-rpc部分命令  
-现在可以用YAAW，添加，删除，开始，暂停，显示状态  
-todo:  
-完善CMakeLists  
-bugs:  
-程序里用的是UTF-8编码，但从命令行窗口传进来的字符编码不固定。  
-future:  
-网络模块跨linux
-
-####ver 3.0.0dev
-2016-3-2  
-架构基本建起来  
-平台：Windows  
-语言：c++  
-依赖的类库：boost  
-界面：命令行  
-支持的下载协议：HTTP（trunk模式暂未实现）  
-实现的特性：磁盘缓存，断点续存，多线程，多任务  
-未来的工作：兼容aria2的web前端  
-
-
+References
+------------
+* [aria2](https://github.com/tatsuhiro-t/aria2)
+* [YAAW](https://github.com/binux/yaaw)
