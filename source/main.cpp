@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 
 	json_rpc_server.start_listening();
 
+    printf("start listening on port 9998\n");
 // 	auto guid = idm.add_task(uri, x);
 
 	// 	Sleep(3000);
