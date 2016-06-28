@@ -17,12 +17,10 @@ Features
 * 不支持gzip
 * JSON-RPC
 
-Screenshot
-------------
-
 Performance
 ------------
-####**`测试结果仅供娱乐`**  
+####**`测试结果仅供娱乐`** 
+编译器为mingw32-5.2.0  
 测试过程：
 * 虚拟机中用ramdisk建盘存放一个1.45GB的文件，用IIS做http server
 * 虚拟机使用NAT模式
@@ -35,6 +33,10 @@ Performance
 右aria2(中间那个小的波峰aria2已经开始了,只是阻塞在写文件)  | ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/3.png "右aria2")
 右迅雷  | ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/2.png "右迅雷")
 左DownThemAll!  | ![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/1.png "左DownThemAll!")
+
+Screenshot
+------------
+![](https://raw.githubusercontent.com/do-you/internet_downloader/master/picture/4.png "YAAW")
 
 Dependency
 ------------
