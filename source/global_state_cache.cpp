@@ -108,6 +108,9 @@ void global_state_cache::do_gather()
 				++numactive;
 
 				printf("task[%s]:speed %.2lf KB/s\n", x->second.gid.c_str(), stoul(x->second.downloadSpeed) / 1024.0);
+				string temp;
+				util_utf8_to_acp(x->second.files.path,temp);
+				printf("└─────%s\n",temp.c_str());
 			}
 			else if (x->second.status == "waiting" || x->second.status == "paused")
 			{
@@ -120,6 +123,7 @@ void global_state_cache::do_gather()
 				++numstop;
 			}
 		}
+		printf("\n");
 		summary.downloadSpeed = to_string(total_speed);
 		summary.numActive = to_string(numactive);
 		summary.numStopped = summary.numStoppedTotal = to_string(numstop);

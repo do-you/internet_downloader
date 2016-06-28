@@ -87,7 +87,8 @@ struct addrinfo *util_getaddrinfo(char const *host, char const *port, int family
     struct addrinfo *ptr = NULL;
     struct addrinfo hints;
 
-    if (!host) {
+    if (!host)
+    {
         int ret = gethostname(hostname, sizeof(hostname));
         if (ret == SOCKET_ERROR)
             util_errno_exit("gethostname failed:");
@@ -106,15 +107,17 @@ struct addrinfo *util_getaddrinfo(char const *host, char const *port, int family
 
 char to_hex(uint8_t x)
 {
-    static const char res[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+//    static const char res[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
     assert(x >= 0 && x < 16);
-    return res[x];
+//    return res[x];
+    return x > 9 ? x + 55 : x + 48;
 }
 
 std::string decimal_to_hex(uint64_t x)
 {
     char res[16];
-    for (int i = 15; i >= 0; --i) {
+    for (int i = 15; i >= 0; --i)
+    {
         res[i] = to_hex(x & 0xF);
         x >>= 4;
     }
@@ -124,8 +127,10 @@ std::string decimal_to_hex(uint64_t x)
 uint64_t hex_to_decimal(std::string str)
 {
     uint64_t res = 0;
-    if (str.length() > 0 && str.length() <= 16) {
-        for (auto x : str) {
+    if (str.length() > 0 && str.length() <= 16)
+    {
+        for (auto x : str)
+        {
             res <<= 4;
             if (x >= '0' && x <= '9')
                 res |= (x - '0');
