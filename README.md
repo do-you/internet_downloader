@@ -52,6 +52,10 @@ References
 * [aria2](https://github.com/tatsuhiro-t/aria2)
 * [YAAW](https://github.com/binux/yaaw)
 
+License
+------------
+GPLv2
+
 Postscript
 ------------
 纯c++的最后一版，下一版会采用Python，c++混合编写一个跨平台的版本，并加入`迅雷离线`支持
