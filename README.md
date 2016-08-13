@@ -1,10 +1,11 @@
 internet_downloader
 ===========================
-一个意在即使在极高速情况下,读(网络)写(硬盘)也尽量互不影响的下载器
+b/s模式的http下载器,前端为YAAW.目前v3只是个demo  
 
-Introduction
+Design goal
 ------------
-一个类似aria2的http下载器,功能上只实现了aria2的一个很小的子集.前端为YAAW.目前v3还只是个demo  
+* **读写分离**:即使在极高速情况下,写硬盘也不会拖慢下载速度
+* **兼容aria2**:符合aria2的json-rpc格式,目前只实现了必要的.
 
 Features
 ------------
@@ -16,6 +17,13 @@ Features
 * 不支持Chunked transfer encoding
 * 不支持gzip
 * JSON-RPC
+
+Sequence diagram
+------------
+图1  
+![](http://uml.mvnsearch.org/github/do-you/test/master/add_uri_1.puml "图1")  
+图2  
+![](http://uml.mvnsearch.org/github/do-you/test/master/add_uri_2.puml "图2")  
 
 Performance
 ------------
