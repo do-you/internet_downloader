@@ -21,9 +21,9 @@ Features
 Sequence diagram
 ------------
 图1  
-![](http://uml.mvnsearch.org/github/do-you/test/master/add_uri_1.puml "图1")  
+![](http://uml.mvnsearch.org/github/do-you/test/master/add_uri_1%2Epuml "图1")  
 图2  
-![](http://uml.mvnsearch.org/github/do-you/test/master/add_uri_2.puml "图2")  
+![](http://uml.mvnsearch.org/github/do-you/test/master/add_uri_2%2Epuml "图2")  
 
 Performance
 ------------
