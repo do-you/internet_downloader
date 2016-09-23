@@ -23,7 +23,7 @@ Sequence diagram
 图1  
 ![](http://uml.mvnsearch.org/github/do-you/test/master/add_uri_1%2Epuml "图1")  
 图2  
-![](http://plantuml.com/plantuml/png/1S5X2e0W30RGgzG1Sj3FBYEc8mLridqZkdtlxMtcxeLT-rQ1PHUHfZSy3TLlDzOi4pmHiWmgSdpY13RGI0PMIgL4rnRFi7pq7m00 "图2")  
+![](http://uml.mvnsearch.org/github/do-you/test/master/add_uri_2%2Epuml "图2")  
 
 Performance
 ------------
